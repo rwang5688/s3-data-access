@@ -1,0 +1,67 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This template creates a cross-account access role for a central S3 bucket.
+
+Parameters:
+  SourceAccountId:
+    Description: Source account Id that needs to access the central S3 bucket.
+    Type: String
+
+  SourceAccountName:
+    Description: Source account Name that needs to access the central S3 bucket.
+    Type: String
+
+  BucketName:
+    Description: Name of the central S3 bucket for the source account.
+    Type: String
+
+Resources:
+  CrossAccountAccessRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${SourceAccountId}:root'
+            Action:
+              - 'sts:AssumeRole'
+      MaxSessionDuration: 43200
+      Path: /
+      RoleName: !Join
+        - ''
+        - - !Ref SourceAccountName
+          - '-cross-account-access-role'  
+
+  CrossAccountAccessPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: !Join
+        - ''
+        - - !Ref SourceAccountName
+          - '-cross-account-access-policy'
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:ListAllMyBuckets'
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - 's3:ListBucket'
+              - 's3:GetBucketLocation'
+            Resource: !Sub 'arn:aws:s3:::${BucketName}'
+          - Effect: Allow
+            Action:
+              - 's3:GetObject'
+              - 's3:PutObject'
+              - 's3:DeleteObject'
+            Resource: !Sub 'arn:aws:s3:::${BucketName}/*'
+      Roles:
+        - !Ref CrossAccountAccessRole
+
+Outputs:
+  CrossAccountAccesRoleArn:
+    Description: Cross-account access role ARN
+    Value: !GetAtt CrossAccountAccessRole.Arn

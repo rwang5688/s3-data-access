@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This template adds permission to assuume a cross-account access role for the central S3 bucket.
+
+Parameters:
+  AccountName:
+    Description: Source account name (i.e., this account).
+    Type: String
+
+  CrossAccountAccessRoleArn:
+    Description: Cross-account access role ARN from the destination account that hosts the central S3 bucket.
+    Type: String
+
+  GroupName:
+    Description: Name of the IAM group that will assume the cross-account access role.
+    Type: String
+
+Resources:
+  AssumeCrossAccountAccessRolePolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: !Join
+        - ''
+        - - 'assume-'
+          - !Ref AccountName
+          - '-cross-account-access-role-policy'
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'sts:AssumeRole'
+            Resource: !Ref CrossAccountAccessRoleArn
+      Groups:
+        - !Ref GroupName
+
+Outputs:
+  AssumeCrossAccountAccesRolePolicyName:
+    Description: Assume cross-account access role policy name
+    Value: !Ref AssumeCrossAccountAccessRolePolicy
