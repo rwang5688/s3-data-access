@@ -1,9 +1,17 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: This template creates a S3 bucket for central storage.
+Description: This template creates a S3 bucket for data storage.
 
 Parameters:
+  BucketType:
+    AllowedValues:
+      - archive
+      - central
+      - local
+    Description: Type of data storage, i.e., one of archive, central, local
+    Type: String
+
   SourceAccountName:
-    Description: Source account name as prefix for the central S3 bucket.
+    Description: Source account name as prefix for the S3 bucket.
     Type: String
 
 Resources:
@@ -11,7 +19,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: Private
-      BucketName: !Sub ${SourceAccountName}-central-${AWS::AccountId}-${AWS::Region}
+      BucketName: !Sub ${SourceAccountName}-${BucketType}-${AWS::AccountId}-${AWS::Region}
       PublicAccessBlockConfiguration:
         BlockPublicAcls: TRUE
         BlockPublicPolicy: TRUE
