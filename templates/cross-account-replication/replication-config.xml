@@ -4,7 +4,7 @@
   <Rule>
     <Status>Enabled</Status>
 
-    <Destination><Bucket>arn:aws:s3:::DOC-EXAMPLE-BUCKET</Bucket></Destination>
+    <Destination><Bucket>arn:aws:s3:::DEST-BUCKET-NAME</Bucket></Destination>
 
   </Rule>
 </ReplicationConfiguration>
