@@ -1,0 +1,69 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This template creates a S3 replication role for a local S3 bucket.
+
+Parameters:
+  SourceAccountName:
+    Description: Source account name (i.e., this account).
+    Type: String
+
+  SourceBucketName:
+    Description: Name of the local S3 bucket in the source account.
+    Type: String
+
+  DestBucketName:
+    Description: Name of the archive S3 bucket in the destination account.
+    Type: String
+
+Resources:
+  S3ReplicationRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: 's3.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      MaxSessionDuration: 43200
+      Path: /
+      RoleName: !Join
+        - ''
+        - - !Ref SourceAccountName
+          - '-s3-replication-role'  
+
+  S3ReplicationPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: !Join
+        - ''
+        - - !Ref SourceAccountName
+          - '-s3-replication-policy'
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:GetReplicationConfiguration'
+              - 's3:ListBucket'
+            Resource: !Sub 'arn:aws:s3:::${SourceBucketName}'
+          - Effect: Allow
+            Action:
+              - 's3:GetObjectVersionForReplication'
+              - 's3:GetObjectVersionAcl'
+              - 's3:GetObjectVersionTagging'
+            Resource: !Sub 'arn:aws:s3:::${SourceBucketName}/*'
+          - Effect: Allow
+            Action:
+              - 's3:ReplicateObject'
+              - 's3:ReplicateDelete'
+              - 's3:ReplicateTags'
+            Resource: !Sub 'arn:aws:s3:::${DestBucketName}/*'
+      Roles:
+        - !Ref S3ReplicationRole
+
+Outputs:
+  S3ReplicationRoleArn:
+    Description: S3 replication role ARN
+    Value: !GetAtt  S3ReplicationRole.Arn

@@ -32,3 +32,4 @@ Resources:
             Resource: !Ref CrossAccountAccessRoleArn
       Groups:
         - !Ref GroupName
+

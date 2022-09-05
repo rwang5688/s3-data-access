@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This template adds S3 bucket policy for replication to the destination bucket.
+
+Parameters:
+  S3ReplicationRoleArn:
+    Description: S3 replication role ARN from the source account that hosts the local S3 bucket.
+    Type: String
+
+  DestBucketName:
+    Description: Name of the archive S3 bucket in the destination account.
+    Type: String
+
+Resources:
+  S3ReplicationBucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref DestBucketName
+      PolicyDocument:
+        Id: !Join
+          - ''
+          - - !Ref DestBucketName
+            - '-s3-replication-policy'
+        Version: 2012-10-17
+        Statement:
+          - Sid: 'Permissions on bucket'
+            Effect: Allow
+            Principal:
+              AWS: !Ref S3ReplicationRoleArn
+            Action:
+              - s3:List*
+              - s3:GetBucketVersioning
+              - s3:PutBucketVersioning
+            Resource: !Sub 'arn:aws:s3:::${DestBucketName}'
+          - Sid: 'Permissions on objects'
+            Effect: Allow
+            Principal:
+              AWS: !Ref S3ReplicationRoleArn
+            Action:
+              - s3:ReplicateDelete
+              - s3:ReplicateObject
+            Resource: !Sub 'arn:aws:s3:::${DestBucketName}/*'
+
