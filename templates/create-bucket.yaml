@@ -14,6 +14,14 @@ Parameters:
     Description: Source account name as prefix for the S3 bucket.
     Type: String
 
+  VersioningConfiguration:
+    AllowedValues:
+      - Enabled
+      - Suspended
+    Default: Enabled
+    Description: Enable or Suspend object versioning in the S3 bucket.
+    Type: String
+
 Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
@@ -26,7 +34,7 @@ Resources:
         IgnorePublicAcls: TRUE
         RestrictPublicBuckets: TRUE
       VersioningConfiguration:
-        Status: Suspended
+        Status: !Ref VersioningConfiguration
 
 Outputs:
   S3BucketName:

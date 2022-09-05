@@ -32,8 +32,3 @@ Resources:
             Resource: !Ref CrossAccountAccessRoleArn
       Groups:
         - !Ref GroupName
-
-Outputs:
-  AssumeCrossAccountAccesRolePolicyName:
-    Description: Assume cross-account access role policy name
-    Value: !Ref AssumeCrossAccountAccessRolePolicy

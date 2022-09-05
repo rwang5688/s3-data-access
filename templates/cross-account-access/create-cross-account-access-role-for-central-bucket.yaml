@@ -2,16 +2,16 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: This template creates a cross-account access role for a central S3 bucket.
 
 Parameters:
+  BucketName:
+    Description: Name of the central S3 bucket for the source account.
+    Type: String
+
   SourceAccountId:
     Description: Source account Id that needs to access the central S3 bucket.
     Type: String
 
   SourceAccountName:
     Description: Source account Name that needs to access the central S3 bucket.
-    Type: String
-
-  BucketName:
-    Description: Name of the central S3 bucket for the source account.
     Type: String
 
 Resources:
