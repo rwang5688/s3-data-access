@@ -27,16 +27,18 @@ Resources:
             Principal:
               AWS: !Ref S3ReplicationRoleArn
             Action:
-              - s3:List*
-              - s3:GetBucketVersioning
-              - s3:PutBucketVersioning
+              - 's3:List*'
+              - 's3:GetBucketVersioning'
+              - 's3:PutBucketVersioning'
             Resource: !Sub 'arn:aws:s3:::${DestBucketName}'
           - Sid: 'Permissions on objects'
             Effect: Allow
             Principal:
               AWS: !Ref S3ReplicationRoleArn
             Action:
-              - s3:ReplicateDelete
-              - s3:ReplicateObject
+              - 's3:ReplicateObject'
+              - 's3:ReplicateDelete'
+              - 's3:ReplicateTags'
+              - 's3:ObjectOwnerOverrideToBucketOwner'
             Resource: !Sub 'arn:aws:s3:::${DestBucketName}/*'
 

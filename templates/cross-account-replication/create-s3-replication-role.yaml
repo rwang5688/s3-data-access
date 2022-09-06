@@ -59,6 +59,7 @@ Resources:
               - 's3:ReplicateObject'
               - 's3:ReplicateDelete'
               - 's3:ReplicateTags'
+              - 's3:ObjectOwnerOverrideToBucketOwner'
             Resource: !Sub 'arn:aws:s3:::${DestBucketName}/*'
       Roles:
         - !Ref S3ReplicationRole
