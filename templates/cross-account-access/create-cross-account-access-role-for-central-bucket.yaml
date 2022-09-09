@@ -62,6 +62,6 @@ Resources:
         - !Ref CrossAccountAccessRole
 
 Outputs:
-  CrossAccountAccesRoleArn:
+  CrossAccountAccessRoleArn:
     Description: Cross-account access role ARN
     Value: !GetAtt CrossAccountAccessRole.Arn
