@@ -6,12 +6,25 @@ Parameters:
     AllowedValues:
       - archive
       - central
-      - local
-    Description: Type of data storage, i.e., one of archive, central, local
+      - general
+    Default: general
+    Description: "archive" replicates from account to storage; "central" replicates from storage to account.
     Type: String
 
-  SourceAccountName:
-    Description: Source account name as prefix for the S3 bucket.
+  AccountAcronym:
+    AllowedValues:
+      - dyn
+      - elec
+      - oqs
+      - qed
+      - sand
+      - stor
+      - tran
+    Description: Choose the acronym for your account.
+    Type: String
+
+  Suffix:
+    Description: ${AccountAcronym}-${Suffix}-${BucketType}-${AWS::AccountId}-${AWS::Region}
     Type: String
 
   VersioningConfiguration:
@@ -27,7 +40,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: Private
-      BucketName: !Sub ${SourceAccountName}-${BucketType}-${AWS::AccountId}-${AWS::Region}
+      BucketName: !Sub ${AccountAcronym}-${Suffix}-${BucketType}-${AWS::AccountId}-${AWS::Region}
       PublicAccessBlockConfiguration:
         BlockPublicAcls: TRUE
         BlockPublicPolicy: TRUE
