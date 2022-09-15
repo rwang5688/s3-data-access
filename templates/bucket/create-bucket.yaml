@@ -8,7 +8,7 @@ Parameters:
       - central
       - general
     Default: general
-    Description: "archive" replicates from account to storage; "central" replicates from storage to account.
+    Description: archive replicates from account to storage; central replicates from storage to account.
     Type: String
 
   AccountAcronym:
