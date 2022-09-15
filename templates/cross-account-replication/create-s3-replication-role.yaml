@@ -63,24 +63,24 @@ Resources:
       Path: /
       RoleName: !Join
         - '-'
-        - - 's3-rep'
-          - !Ref SourceAccountAcronym
+        - - !Ref SourceAccountAcronym
+          - 'to'
           - !Ref TargetAccountAcronym
           - !Ref Suffix
           - !Ref BucketType
-          - 'role'
+          - 's3-rep-role'
 
   S3ReplicationPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
       PolicyName: !Join
         - '-'
-        - - 's3-rep'
-          - !Ref SourceAccountAcronym
+        - - !Ref SourceAccountAcronym
+          - 'to'
           - !Ref TargetAccountAcronym
           - !Ref Suffix
           - !Ref BucketType
-          - 'policy'
+          - 's3-rep-policy'
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
