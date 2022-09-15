@@ -17,9 +17,9 @@ Resources:
       Bucket: !Ref TargetBucketName
       PolicyDocument:
         Id: !Join
-          - ''
+          - '-'
           - - !Ref TargetBucketName
-            - '-s3-replication-policy'
+            - 's3-rep-policy'
         Version: 2012-10-17
         Statement:
           - Sid: 'Permissions on bucket'
