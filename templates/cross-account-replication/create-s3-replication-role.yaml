@@ -2,16 +2,49 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: This template creates a S3 replication role for a local S3 bucket.
 
 Parameters:
-  SourceAccountName:
-    Description: Source account name (i.e., this account).
+  BucketType:
+    AllowedValues:
+      - archive
+      - central
+      - general
+    Default: general
+    Description: archive replicates from account to storage; central replicates from storage to account.
+    Type: String
+
+  SourceAccountAcronym:
+    AllowedValues:
+      - dyn
+      - elec
+      - oqs
+      - qed
+      - sand
+      - stor
+      - tran
+    Description: Choose the acronym for your account.
     Type: String
 
   SourceBucketName:
     Description: Name of the local S3 bucket in the source account.
     Type: String
 
+  Suffix:
+    Description: The Suffix you used to create your source and target buckets.
+    Type: String
+
   TargetBucketName:
     Description: Name of the archive S3 bucket in the Target account.
+    Type: String
+
+  TargetAccountAcronym:
+    AllowedValues:
+      - dyn
+      - elec
+      - oqs
+      - qed
+      - sand
+      - stor
+      - tran
+    Description: Choose the acronym for your account.
     Type: String
 
 Resources:
@@ -29,17 +62,25 @@ Resources:
       MaxSessionDuration: 43200
       Path: /
       RoleName: !Join
-        - ''
-        - - !Ref SourceAccountName
-          - '-s3-replication-role'  
+        - '-'
+        - - 's3-rep'
+          - !Ref SourceAccountAcronym
+          - !Ref TargetAccountAcronym
+          - !Ref Suffix
+          - !Ref BucketType
+          - 'role'
 
   S3ReplicationPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
       PolicyName: !Join
-        - ''
-        - - !Ref SourceAccountName
-          - '-s3-replication-policy'
+        - '-'
+        - - 's3-rep'
+          - !Ref SourceAccountAcronym
+          - !Ref TargetAccountAcronym
+          - !Ref Suffix
+          - !Ref BucketType
+          - 'policy'
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
