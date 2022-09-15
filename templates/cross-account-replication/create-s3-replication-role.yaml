@@ -10,8 +10,8 @@ Parameters:
     Description: Name of the local S3 bucket in the source account.
     Type: String
 
-  DestBucketName:
-    Description: Name of the archive S3 bucket in the destination account.
+  TargetBucketName:
+    Description: Name of the archive S3 bucket in the Target account.
     Type: String
 
 Resources:
@@ -60,7 +60,7 @@ Resources:
               - 's3:ReplicateDelete'
               - 's3:ReplicateTags'
               - 's3:ObjectOwnerOverrideToBucketOwner'
-            Resource: !Sub 'arn:aws:s3:::${DestBucketName}/*'
+            Resource: !Sub 'arn:aws:s3:::${TargetBucketName}/*'
       Roles:
         - !Ref S3ReplicationRole
 
