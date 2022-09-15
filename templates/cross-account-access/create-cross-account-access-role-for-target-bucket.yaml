@@ -2,16 +2,24 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: This template creates a cross-account access role for a central S3 bucket.
 
 Parameters:
-  BucketName:
-    Description: Name of the central S3 bucket for the source account.
+  TargetBucketName:
+    Description: Name of the target S3 bucket that we want to grant access to.
     Type: String
 
-  SourceAccountId:
-    Description: Source account Id that needs to access the central S3 bucket.
+  FromAccountAcronym:
+    AllowedValues:
+      - dyn
+      - elec
+      - oqs
+      - qed
+      - sand
+      - stor
+      - tran
+    Description: Choose the acronym for the account that you want to access from.
     Type: String
 
-  SourceAccountName:
-    Description: Source account Name that needs to access the central S3 bucket.
+  FromAccountId:
+    Description: Account Id for the account that you want to access from.
     Type: String
 
 Resources:
@@ -23,14 +31,14 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              AWS: !Sub 'arn:aws:iam::${SourceAccountId}:root'
+              AWS: !Sub 'arn:aws:iam::${FromAccountId}:root'
             Action:
               - 'sts:AssumeRole'
       MaxSessionDuration: 43200
       Path: /
       RoleName: !Join
         - ''
-        - - !Ref SourceAccountName
+        - - !Ref FromAccountAcronym
           - '-cross-account-access-role'  
 
   CrossAccountAccessPolicy:
@@ -38,7 +46,7 @@ Resources:
     Properties:
       PolicyName: !Join
         - ''
-        - - !Ref SourceAccountName
+        - - !Ref FromAccountAcronym
           - '-cross-account-access-policy'
       PolicyDocument:
         Version: "2012-10-17"
@@ -51,13 +59,13 @@ Resources:
             Action:
               - 's3:ListBucket'
               - 's3:GetBucketLocation'
-            Resource: !Sub 'arn:aws:s3:::${BucketName}'
+            Resource: !Sub 'arn:aws:s3:::${TargetBucketName}'
           - Effect: Allow
             Action:
               - 's3:GetObject'
               - 's3:PutObject'
               - 's3:DeleteObject'
-            Resource: !Sub 'arn:aws:s3:::${BucketName}/*'
+            Resource: !Sub 'arn:aws:s3:::${TargetBucketName}/*'
       Roles:
         - !Ref CrossAccountAccessRole
 
