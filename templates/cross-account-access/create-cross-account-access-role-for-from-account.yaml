@@ -2,10 +2,6 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: This template creates a cross-account access role for a central S3 bucket.
 
 Parameters:
-  TargetBucketName:
-    Description: Name of the target S3 bucket that we want to grant access to.
-    Type: String
-
   FromAccountAcronym:
     AllowedValues:
       - dyn
@@ -20,6 +16,10 @@ Parameters:
 
   FromAccountId:
     Description: Account Id for the account that you want to access from.
+    Type: String
+
+  TargetBucketName:
+    Description: Name of the target S3 bucket that we want to grant access to.
     Type: String
 
 Resources:
@@ -37,17 +37,17 @@ Resources:
       MaxSessionDuration: 43200
       Path: /
       RoleName: !Join
-        - ''
-        - - !Ref FromAccountAcronym
-          - '-cross-account-access-role'  
+        - '-'
+        - - 'cross-account-access-role-for'  
+          - !Ref FromAccountAcronym
 
   CrossAccountAccessPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
       PolicyName: !Join
-        - ''
-        - - !Ref FromAccountAcronym
-          - '-cross-account-access-policy'
+        - '-'
+        - - 'cross-account-access-policy-for'  
+          - !Ref FromAccountAcronym
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
